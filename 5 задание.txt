@@ -1,0 +1,9 @@
+s = input()
+
+digits = ""
+
+for ch in s:
+    if ch.isdigit():
+        digits += ch
+
+print(digits if digits else 0)
