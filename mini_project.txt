@@ -1,0 +1,165 @@
+TASKS_FILE = "tasks.txt"
+
+tasks = []
+
+
+def get_next_id():
+    if not tasks:
+        return 1
+    return max(task["id"] for task in tasks) + 1
+
+
+def add_task():
+    title = input("Enter task title: ").strip()
+
+    if title == "":
+        print("Task title cannot be empty.")
+        return
+
+    task = {
+        "id": get_next_id(),
+        "title": title,
+        "done": False,
+    }
+    tasks.append(task)
+    print("Task added successfully.")
+
+
+def view_tasks():
+    if not tasks:
+        print("No tasks found.")
+        return
+
+    for task in tasks:
+        status = "Done" if task["done"] else "Not Done"
+        print(f"[{task['id']}] {task['title']} | {status}")
+
+
+def find_task_by_id(task_id):
+    for task in tasks:
+        if task["id"] == task_id:
+            return task
+    return None
+
+
+def mark_done():
+    try:
+        task_id = int(input("Enter task ID: "))
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    task = find_task_by_id(task_id)
+    if task is None:
+        print("Task not found.")
+        return
+
+    task["done"] = True
+    print("Task marked as Done.")
+
+
+def delete_task():
+    try:
+        task_id = int(input("Enter task ID: "))
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    task = find_task_by_id(task_id)
+    if task is None:
+        print("Task not found.")
+        return
+
+    tasks.remove(task)
+    print("Task deleted.")
+
+
+def show_stats():
+    total = len(tasks)
+    done = 0
+
+    for task in tasks:
+        if task["done"]:
+            done += 1
+
+    not_done = total - done
+    completion = 0
+
+    if total > 0:
+        completion = (done / total) * 100
+
+    print(f"Total tasks: {total}")
+    print(f"Done: {done}")
+    print(f"Not done: {not_done}")
+    print(f"Completion: {completion:.0f}%")
+
+
+def save_tasks():
+    with open(TASKS_FILE, "w", encoding="utf-8") as file:
+        for task in tasks:
+            done_value = 1 if task["done"] else 0
+            file.write(f"{task['id']}|{task['title']}|{done_value}\n")
+
+
+def load_tasks():
+    try:
+        with open(TASKS_FILE, "r", encoding="utf-8") as file:
+            for line in file:
+                line = line.strip()
+
+                if line == "":
+                    continue
+
+                parts = line.split("|")
+                if len(parts) != 3:
+                    continue
+
+                task = {
+                    "id": int(parts[0]),
+                    "title": parts[1],
+                    "done": parts[2] == "1",
+                }
+                tasks.append(task)
+    except FileNotFoundError:
+        pass
+
+
+def show_menu():
+    print()
+    print("=== STUDENT TASK MANAGER ===")
+    print("1. Add Task")
+    print("2. View Tasks")
+    print("3. Mark Task as Done")
+    print("4. Delete Task")
+    print("5. Show Statistics")
+    print("6. Save & Exit")
+
+
+def main():
+    load_tasks()
+
+    while True:
+        show_menu()
+        choice = input("Choose an option: ").strip()
+        print()
+
+        if choice == "1":
+            add_task()
+        elif choice == "2":
+            view_tasks()
+        elif choice == "3":
+            mark_done()
+        elif choice == "4":
+            delete_task()
+        elif choice == "5":
+            show_stats()
+        elif choice == "6":
+            save_tasks()
+            print("Tasks saved. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please choose 1-6.")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,27 @@
+print("=== SIMPLE CALCULATOR ===")
+
+try:
+    first_number = float(input("Enter first number: "))
+    second_number = float(input("Enter second number: "))
+except ValueError:
+    print("Error: Please enter valid numbers.")
+else:
+    operation = input("Choose operation (+ - * /): ").strip()
+
+    if operation == "+":
+        result = first_number + second_number
+        print(f"Result: {result}")
+    elif operation == "-":
+        result = first_number - second_number
+        print(f"Result: {result}")
+    elif operation == "*":
+        result = first_number * second_number
+        print(f"Result: {result}")
+    elif operation == "/":
+        if second_number == 0:
+            print("Error: Cannot divide by zero.")
+        else:
+            result = first_number / second_number
+            print(f"Result: {result}")
+    else:
+        print("Error: Invalid operation.")
